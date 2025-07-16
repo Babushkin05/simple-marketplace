@@ -1,0 +1,8 @@
+http:
+  port: "8080"
+
+services:
+  orders:
+    address: "localhost:50051"
+  payments:
+    address: "localhost:50052"
