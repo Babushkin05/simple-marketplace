@@ -1,8 +1,14 @@
-http:
-  port: "8080"
+server:
+  grpc_port: 50051
 
-services:
-  orders:
-    address: "localhost:50051"
-  payments:
-    address: "localhost:50052"
+database:
+  host: localhost
+  port: 5432
+  user: auth_user
+  password: auth_pass
+  dbname: auth_db
+  sslmode: disable
+
+jwt:
+  secret: "supersecretjwtkey1234567890"  
+  ttl_minutes: 60                       

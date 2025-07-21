@@ -8,18 +8,23 @@ import (
 )
 
 type Config struct {
-	HTTP struct {
-		Port string `yaml:"port"`
-	} `yaml:"http"`
+	Server struct {
+		GRPCPort int `yaml:"grpc_port"`
+	} `yaml:"server"`
 
-	Services struct {
-		Orders struct {
-			Address string `yaml:"address"`
-		} `yaml:"orders"`
-		Payments struct {
-			Address string `yaml:"address"`
-		} `yaml:"payments"`
-	} `yaml:"services"`
+	Database struct {
+		Host     string `yaml:"host"`
+		Port     int    `yaml:"port"`
+		User     string `yaml:"user"`
+		Password string `yaml:"password"`
+		DBName   string `yaml:"dbname"`
+		SSLMode  string `yaml:"sslmode"`
+	} `yaml:"database"`
+
+	JWT struct {
+		Secret     string `yaml:"secret"`
+		TTLMinutes int    `yaml:"ttl_minutes"`
+	} `yaml:"jwt"`
 }
 
 func MustLoad() *Config {

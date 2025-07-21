@@ -8,7 +8,7 @@ import (
 
 func main() {
 	cfg := config.MustLoad()
-	log.Printf("Loaded config: %s", cfg)
+	log.Printf("Config has loaded")
 
 	// init db + migration
 
