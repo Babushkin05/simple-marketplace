@@ -13,6 +13,17 @@ type registerRequest struct {
 	Password string `json:"password" binding:"required"`
 }
 
+// Register godoc
+// @Summary      Зарегистрировать нового пользователя
+// @Description  Создаёт нового пользователя по логину и паролю
+// @Tags         auth
+// @Accept       json
+// @Produce      json
+// @Param        input body handler.registerRequest true "Данные регистрации"
+// @Success      200 {object} map[string]string "Успешный ответ с user_id и login"
+// @Failure      400 {object} map[string]string "Некорректный ввод"
+// @Failure      500 {object} map[string]string "Внутренняя ошибка сервера"
+// @Router       /register [post]
 func (h *Handler) Register(c *gin.Context) {
 	var req registerRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -37,6 +48,17 @@ type loginRequest struct {
 	Password string `json:"password" binding:"required"`
 }
 
+// Login godoc
+// @Summary      Авторизация пользователя
+// @Description  Авторизует пользователя и возвращает JWT токен
+// @Tags         auth
+// @Accept       json
+// @Produce      json
+// @Param        input body handler.loginRequest true "Данные авторизации"
+// @Success      200 {object} map[string]string "Успешный ответ с токеном"
+// @Failure      400 {object} map[string]string "Некорректный ввод"
+// @Failure      401 {object} map[string]string "Неверные логин или пароль"
+// @Router       /login [post]
 func (h *Handler) Login(c *gin.Context) {
 	var req loginRequest
 	if err := c.ShouldBindJSON(&req); err != nil {

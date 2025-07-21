@@ -5,6 +5,10 @@ import (
 	"net/http"
 	"strconv"
 
+	_ "github.com/Babushkin05/simple-marketplace/api-gateway/docs" // swag init сюда сгенерирует
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
+
 	"github.com/Babushkin05/simple-marketplace/api-gateway/internal/client"
 	"github.com/Babushkin05/simple-marketplace/api-gateway/internal/config"
 	"github.com/Babushkin05/simple-marketplace/api-gateway/internal/handler"
@@ -26,8 +30,9 @@ func main() {
 	router := handler.NewHandler(authConn, goodsConn)
 
 	addr := ":" + strconv.Itoa(cfg.Server.Port)
-	log.Printf("Starting HTTP server on %s", addr)
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	if err := router.Run(addr); err != nil && err != http.ErrServerClosed {
 		log.Fatalf("server error: %v", err)
 	}
+	log.Printf("Starting HTTP server on %s", addr)
 }

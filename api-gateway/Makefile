@@ -11,5 +11,8 @@ proto:
 		$(PROTO_DIR)/goods/goods.proto \
 		$(PROTO_DIR)/auth/auth.proto
 
+swaga:
+	swag init --dir cmd,internal/handler,api/gen/auth,api/gen/goods --output docs
+
 clean:
 	rm -rf $(OUT_DIR)/*

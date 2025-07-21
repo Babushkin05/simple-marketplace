@@ -16,6 +16,19 @@ type createAdRequest struct {
 	Price       float64 `json:"price" binding:"required"`
 }
 
+// CreateAd godoc
+// @Summary      Создать объявление
+// @Description  Создаёт новое объявление. Требуется JWT токен в заголовке.
+// @Tags         ads
+// @Accept       json
+// @Produce      json
+// @Param        Authorization header string true "JWT токен"
+// @Param        input body createAdRequest true "Данные объявления"
+// @Success      200 {object} goodspb.CreateAdResponse "Успешно созданное объявление"
+// @Failure      400 {object} map[string]string "Некорректный запрос"
+// @Failure      401 {object} map[string]string "Нет токена авторизации"
+// @Failure      500 {object} map[string]string "Ошибка сервера"
+// @Router       /ads [post]
 func (h *Handler) CreateAd(c *gin.Context) {
 	token := c.GetHeader("Authorization")
 	if token == "" {
@@ -44,6 +57,19 @@ func (h *Handler) CreateAd(c *gin.Context) {
 	c.JSON(http.StatusOK, adResp)
 }
 
+// ListAds godoc
+// @Summary      Получить список объявлений
+// @Description  Получает список объявлений с пагинацией. Требуется JWT токен в заголовке.
+// @Tags         ads
+// @Accept       json
+// @Produce      json
+// @Param        Authorization header string true "JWT токен"
+// @Param        page query int false "Номер страницы" default(1)
+// @Param        page_size query int false "Размер страницы" default(10)
+// @Success      200 {array} goodspb.CreateAdResponse "Список объявлений"
+// @Failure      401 {object} map[string]string "Нет токена авторизации"
+// @Failure      500 {object} map[string]string "Ошибка сервера"
+// @Router       /ads [get]
 func (h *Handler) ListAds(c *gin.Context) {
 	token := c.GetHeader("Authorization")
 	if token == "" {
