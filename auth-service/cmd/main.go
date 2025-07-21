@@ -24,7 +24,7 @@ func main() {
 	handler := grpcServer.NewAuthHandler(authService)
 
 	// Start gRPC server
-	if err := grpcServer.StartGRPCServer(handler, cfg.Server.GRPCPort); err != nil {
+	if err := grpcServer.StartGRPCServer(handler, cfg.Server.GRPCPort, cfg.Server.Host); err != nil {
 		log.Fatalf("gRPC server failed: %v", err)
 	}
 }
