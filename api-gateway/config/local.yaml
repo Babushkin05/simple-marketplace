@@ -1,0 +1,8 @@
+server:
+  port: 8080
+
+auth_service:
+  addr: auth-service:50051
+
+goods_service:
+  addr: goods-service:50052
