@@ -5,6 +5,7 @@ import (
 	"errors"
 	"time"
 
+	authpb "github.com/Babushkin05/simple-marketplace/goods-service/api/gen/auth"
 	"github.com/Babushkin05/simple-marketplace/goods-service/internal/db"
 	"github.com/Babushkin05/simple-marketplace/goods-service/internal/models"
 )
@@ -17,10 +18,10 @@ var (
 
 type service struct {
 	repo db.GoodsRepository
-	auth AuthClient
+	auth authpb.AuthServiceClient
 }
 
-func NewService(repo db.GoodsRepository, auth AuthClient) GoodsService {
+func NewService(repo db.GoodsRepository, auth authpb.AuthServiceClient) GoodsService {
 	return &service{
 		repo: repo,
 		auth: auth,
@@ -28,8 +29,9 @@ func NewService(repo db.GoodsRepository, auth AuthClient) GoodsService {
 }
 
 func (s *service) CreateAd(ctx context.Context, token string, ad models.Ad) (models.Ad, error) {
-	userID, _, valid, err := s.auth.ValidateToken(ctx, token)
-	if err != nil || !valid {
+	resp, err := s.auth.ValidateToken(ctx, &authpb.ValidateTokenRequest{Token: token})
+
+	if err != nil || resp == nil {
 		return models.Ad{}, ErrUnauthorized
 	}
 
@@ -46,7 +48,7 @@ func (s *service) CreateAd(ctx context.Context, token string, ad models.Ad) (mod
 		return models.Ad{}, ErrValidationError
 	}
 
-	ad.AuthorID = userID
+	ad.AuthorID = resp.Login
 	ad.CreatedAt = time.Now()
 
 	res, err := s.repo.CreateAd(&ad)
@@ -61,10 +63,8 @@ func (s *service) GetAds(ctx context.Context, token string, filter models.AdsFil
 	var userID string
 
 	if token != "" {
-		var valid bool
-		var err error
-		userID, _, valid, err = s.auth.ValidateToken(ctx, token)
-		if err != nil || !valid {
+		resp, err := s.auth.ValidateToken(ctx, &authpb.ValidateTokenRequest{Token: token})
+		if err != nil || resp == nil {
 			userID = ""
 		}
 	}
