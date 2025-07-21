@@ -3,6 +3,7 @@ package grpc
 import (
 	"context"
 	"errors"
+	"strings"
 	"time"
 
 	authpb "github.com/Babushkin05/simple-marketplace/goods-service/api/gen/auth"
@@ -29,7 +30,7 @@ func (h *GoodsHandler) CreateAd(ctx context.Context, req *goodspb.CreateAdReques
 	authResp, err := h.authService.ValidateToken(ctx, &authpb.ValidateTokenRequest{
 		Token: req.Token,
 	})
-	if err != nil {
+	if err != nil || authResp.Login == "" {
 		return nil, errors.New("unauthorized")
 	}
 
@@ -60,7 +61,7 @@ func (h *GoodsHandler) ListAds(ctx context.Context, req *goodspb.ListAdsRequest)
 	filter := models.AdsFilter{
 		MinPrice: &req.PriceMin,
 		MaxPrice: &req.PriceMax,
-		SortBy:   req.SortBy.String(),
+		SortBy:   strings.ToLower(req.SortBy.String()),
 		SortDesc: req.SortOrder == goodspb.ListAdsRequest_DESC,
 		Limit:    int(req.PageSize),
 		Offset:   (int(req.Page) - 1) * int(req.PageSize),

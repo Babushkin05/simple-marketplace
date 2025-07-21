@@ -8,7 +8,7 @@ type Ad struct {
 	Description string    `db:"description"`
 	ImageURL    string    `db:"image_url"`
 	Price       float64   `db:"price"`
-	AuthorID    string    `db:"author_id"`
+	AuthorID    string    `db:"author_login"`
 	CreatedAt   time.Time `db:"created_at"`
 }
 

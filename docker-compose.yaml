@@ -37,8 +37,47 @@ services:
     networks:
       - marketplace-net
 
+  goods-db:
+    image: postgres:15
+    container_name: goods-db
+    environment:
+      POSTGRES_USER: goods_user
+      POSTGRES_PASSWORD: goods_pass
+      POSTGRES_DB: goods_db
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U goods_user -d goods_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    ports:
+      - "5433:5432"
+    volumes:
+      - goods_db_data:/var/lib/postgresql/data
+    networks:
+      - marketplace-net
+
+  goods-service:
+    build:
+      context: ./goods-service
+      dockerfile: deployments/Dockerfile
+    container_name: goods-service
+    depends_on:
+      goods-db:
+        condition: service_healthy
+      auth-service:
+        condition: service_started
+    ports:
+      - "50052:50052"
+    environment:
+      CONFIG_PATH: /app/config/local.yaml
+    volumes:
+      - ./goods-service/config:/app/config
+    networks:
+      - marketplace-net
+
 volumes:
   auth_db_data:
+  goods_db_data:
 
 networks:
   marketplace-net:

@@ -2,6 +2,7 @@ package db
 
 import (
 	"fmt"
+	"log"
 	"strings"
 
 	"github.com/Babushkin05/simple-marketplace/goods-service/internal/models"
@@ -18,8 +19,8 @@ func NewPostgresRepo(db *sqlx.DB) *PostgresRepo {
 
 func (r *PostgresRepo) CreateAd(ad *models.Ad) (*models.Ad, error) {
 	query := `
-		INSERT INTO ads (title, description, image_url, price, author_id)
-		VALUES (:title, :description, :image_url, :price, :author_id)
+		INSERT INTO ads (title, description, image_url, price, author_login)
+		VALUES (:title, :description, :image_url, :price, :author_login)
 		RETURNING id, created_at;
 	`
 
@@ -39,18 +40,18 @@ func (r *PostgresRepo) CreateAd(ad *models.Ad) (*models.Ad, error) {
 func (r *PostgresRepo) ListAds(filter models.AdsFilter) ([]*models.Ad, error) {
 	base := `
 		SELECT 
-			id, title, description, image_url, price, author_id, created_at
+			id, title, description, image_url, price, author_login, created_at
 		FROM ads
 	`
 	var args []interface{}
 	var whereClauses []string
-	var orderBy string = "created_at DESC"
+	var orderBy string = "created_at"
 
-	if filter.MinPrice != nil {
+	if filter.MinPrice != nil && *filter.MinPrice != 0 {
 		whereClauses = append(whereClauses, "price >= ?")
 		args = append(args, *filter.MinPrice)
 	}
-	if filter.MaxPrice != nil {
+	if filter.MaxPrice != nil && *filter.MaxPrice != 0 {
 		whereClauses = append(whereClauses, "price <= ?")
 		args = append(args, *filter.MaxPrice)
 	}
@@ -80,11 +81,12 @@ func (r *PostgresRepo) ListAds(filter models.AdsFilter) ([]*models.Ad, error) {
 		query += " WHERE " + strings.Join(whereClauses, " AND ")
 	}
 	query += fmt.Sprintf(" ORDER BY %s LIMIT %d OFFSET %d", orderBy, limit, offset)
-
 	var ads []*models.Ad
 	if err := r.db.Select(&ads, r.db.Rebind(query), args...); err != nil {
 		return nil, fmt.Errorf("list ads: %w", err)
 	}
+
+	log.Println(len(ads))
 
 	return ads, nil
 }

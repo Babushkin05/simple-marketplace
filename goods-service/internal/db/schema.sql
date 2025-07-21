@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS ads (
     image_url VARCHAR(500) NOT NULL CHECK (image_url ~* '^https?://'),
     price NUMERIC(10, 2) NOT NULL CHECK (price >= 0),
 
-    author_id UUID NOT NULL,
+    author_login VARCHAR(100) NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
 
