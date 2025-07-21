@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  auth-db:
+    image: postgres:15
+    container_name: auth-db
+    environment:
+      POSTGRES_USER: auth_user
+      POSTGRES_PASSWORD: auth_pass
+      POSTGRES_DB: auth_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - auth_db_data:/var/lib/postgresql/data
+    networks:
+      - marketplace-net
+
+  auth-service:
+    build:
+      context: ./auth-service
+    container_name: auth-service
+    depends_on:
+      - auth-db
+    ports:
+      - "50051:50051"  
+    environment:
+      CONFIG_PATH: /app/config/local.yaml
+    volumes:
+      - ./auth-service/config:/app/config
+    networks:
+      - marketplace-net
+
+volumes:
+  auth_db_data:
+
+networks:
+  marketplace-net:
+    driver: bridge
