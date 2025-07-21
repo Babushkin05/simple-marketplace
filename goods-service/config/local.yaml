@@ -4,7 +4,7 @@ server:
 
 database:
   host: goods-db
-  port: 5433
+  port: 5432
   user: goods_user
   password: goods_pass
   dbname: goods_db
