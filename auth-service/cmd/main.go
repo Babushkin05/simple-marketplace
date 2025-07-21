@@ -3,15 +3,28 @@ package main
 import (
 	"log"
 
-	"github.com/Babushkin05/simple-marketplace/auth-service/internal/config"
+	cfgPkg "github.com/Babushkin05/simple-marketplace/auth-service/internal/config"
+	"github.com/Babushkin05/simple-marketplace/auth-service/internal/db"
+	grpcServer "github.com/Babushkin05/simple-marketplace/auth-service/internal/grpc"
+	"github.com/Babushkin05/simple-marketplace/auth-service/internal/service"
 )
 
 func main() {
-	cfg := config.MustLoad()
-	log.Printf("Config has loaded")
+	// Load config
+	cfg := cfgPkg.MustLoad()
+	log.Println("Config loaded")
 
-	// init db + migration
+	// Connect to database
+	dbConn := db.MustInitPostgres(*cfg)
+	defer dbConn.Close()
 
-	// init grpc server
+	// Init dependencies
+	repo := db.NewPostgresRepo(dbConn)
+	authService := service.NewAuthService(repo, cfg.JWT.Secret, cfg.JWT.TTL)
+	handler := grpcServer.NewAuthHandler(authService)
 
+	// Start gRPC server
+	if err := grpcServer.StartGRPCServer(handler, cfg.Server.GRPCPort); err != nil {
+		log.Fatalf("gRPC server failed: %v", err)
+	}
 }

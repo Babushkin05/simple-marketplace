@@ -16,6 +16,10 @@ type AuthService struct {
 	TokenTTL  time.Duration
 }
 
+func NewAuthService(repo db.UserRepository, secret string, tokenTTL time.Duration) *AuthService {
+	return &AuthService{Repo: repo, JWTSecret: secret, TokenTTL: tokenTTL}
+}
+
 func (s *AuthService) Register(ctx context.Context, login, password string) (string, string, error) {
 	if len(login) < 3 || len(password) < 6 {
 		return "", "", errors.New("login or password too short")

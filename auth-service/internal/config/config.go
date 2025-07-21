@@ -3,6 +3,7 @@ package config
 import (
 	"flag"
 	"os"
+	"time"
 
 	"github.com/ilyakaznacheev/cleanenv"
 )
@@ -22,8 +23,8 @@ type Config struct {
 	} `yaml:"database"`
 
 	JWT struct {
-		Secret     string `yaml:"secret"`
-		TTLMinutes int    `yaml:"ttl_minutes"`
+		Secret string        `yaml:"secret"`
+		TTL    time.Duration `yaml:"ttl"`
 	} `yaml:"jwt"`
 }
 

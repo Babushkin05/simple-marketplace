@@ -11,4 +11,4 @@ database:
 
 jwt:
   secret: "supersecretjwtkey1234567890"  
-  ttl_minutes: 60                       
+  ttl: 60m                   
