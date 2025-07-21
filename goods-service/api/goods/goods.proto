@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package goods;
 
-option go_package = "github.com/Babushkin05/simple-marketplace/goods-service/api/proto;proto";
+option go_package = "github.com/Babushkin05/simple-marketplace/goods-service/api/gen/goodspb;goodspb";
 
 service GoodsService {
   rpc CreateAd(CreateAdRequest) returns (AdResponse);
