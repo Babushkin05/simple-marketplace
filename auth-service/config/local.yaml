@@ -2,7 +2,7 @@ server:
   grpc_port: 50051
 
 database:
-  host: localhost
+  host: auth-db
   port: 5432
   user: auth_user
   password: auth_pass

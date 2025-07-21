@@ -5,9 +5,9 @@ import (
 )
 
 type User struct {
-	ID           string
-	Login        string
-	PasswordHash string
+	ID           string `db:"id"`
+	Login        string `db:"login"`
+	PasswordHash string `db:"password_hash"`
 }
 
 type UserRepository interface {
