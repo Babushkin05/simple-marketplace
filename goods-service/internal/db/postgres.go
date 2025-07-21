@@ -36,7 +36,7 @@ func (r *PostgresRepo) CreateAd(ad *models.Ad) (*models.Ad, error) {
 	return ad, nil
 }
 
-func (r *PostgresRepo) ListAds(filter models.AdsFilter) ([]*models.AdWithAuthor, error) {
+func (r *PostgresRepo) ListAds(filter models.AdsFilter) ([]*models.Ad, error) {
 	base := `
 		SELECT 
 			id, title, description, image_url, price, author_id, created_at
@@ -81,7 +81,7 @@ func (r *PostgresRepo) ListAds(filter models.AdsFilter) ([]*models.AdWithAuthor,
 	}
 	query += fmt.Sprintf(" ORDER BY %s LIMIT %d OFFSET %d", orderBy, limit, offset)
 
-	var ads []*models.AdWithAuthor
+	var ads []*models.Ad
 	if err := r.db.Select(&ads, r.db.Rebind(query), args...); err != nil {
 		return nil, fmt.Errorf("list ads: %w", err)
 	}
