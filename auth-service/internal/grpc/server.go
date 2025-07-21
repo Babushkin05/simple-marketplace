@@ -6,6 +6,7 @@ import (
 
 	pb "github.com/Babushkin05/simple-marketplace/auth-service/api/gen"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/reflection"
 )
 
 func StartGRPCServer(handler pb.AuthServiceServer, port int) error {
@@ -16,6 +17,7 @@ func StartGRPCServer(handler pb.AuthServiceServer, port int) error {
 
 	s := grpc.NewServer()
 	pb.RegisterAuthServiceServer(s, handler)
+	reflection.Register(s)
 
 	fmt.Printf("gRPC server started on port %d\n", port)
 	return s.Serve(lis)
