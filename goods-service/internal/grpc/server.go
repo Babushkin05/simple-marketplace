@@ -6,6 +6,7 @@ import (
 	"net"
 
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/reflection"
 
 	authpb "github.com/Babushkin05/simple-marketplace/goods-service/api/gen/auth"
 	goodspb "github.com/Babushkin05/simple-marketplace/goods-service/api/gen/goods"
@@ -23,6 +24,7 @@ func RunGRPCServer(cfg config.Config, srv service.GoodsService, authClient authp
 
 	handler := NewGoodsHandler(srv, authClient)
 	goodspb.RegisterGoodsServiceServer(grpcServer, handler)
+	reflection.Register(grpcServer)
 
 	log.Printf("gRPC server listening at %s:%d", cfg.Server.Host, cfg.Server.Port)
 	return grpcServer.Serve(listener)
